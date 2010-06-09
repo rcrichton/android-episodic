@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="app_name">Series Ticker</string>
+<string name="no_series">No series defined, press menu to add a new series</string>
+<string name="menu_delete">Delete</string>
+<string name="menu_add">Add</string>
+<string name="series_name">Series Title:</string>
+<string name="season_num">Season Number:</string>
+<string name="episode_num">Episode Number:</string>
+<string name="confirm">Confirm</string>
+<string name="season_code">S</string>
+<string name="episode_code">E</string>
+<string name="plus">+</string>
+</resources>
