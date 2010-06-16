@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <string name="app_name">Series Ticker</string>
+    <string name="app_name">Episodic</string>
 <string name="no_series">No series defined, press menu to add a new series</string>
 <string name="menu_delete">Delete</string>
 <string name="menu_add">Add</string>

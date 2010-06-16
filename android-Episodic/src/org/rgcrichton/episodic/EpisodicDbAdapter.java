@@ -1,4 +1,4 @@
-package org.rgcrichton.seriesticker;
+package org.rgcrichton.episodic;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class SeriesTickerDbAdapter {
+public class EpisodicDbAdapter {
 	
 	public static final String KEY_ROWID = "_id";
 	public static final String KEY_SERIES_NAME = "series_name";
@@ -53,11 +53,11 @@ public class SeriesTickerDbAdapter {
         }
     }
     
-    public SeriesTickerDbAdapter(Context ctx) {
+    public EpisodicDbAdapter(Context ctx) {
         this.mCtx = ctx;
     }
 
-    public SeriesTickerDbAdapter open() throws SQLException {
+    public EpisodicDbAdapter open() throws SQLException {
         mDbHelper = new DatabaseHelper(mCtx);
         mDb = mDbHelper.getWritableDatabase();
         return this;
