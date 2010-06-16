@@ -1,4 +1,4 @@
-package org.rgcrichton.seriesticker;
+package org.rgcrichton.episodic;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -9,7 +9,7 @@ import android.widget.EditText;
 
 public class SeriesEdit extends Activity {
 	
-	private SeriesTickerDbAdapter mDbHelper;
+	private EpisodicDbAdapter mDbHelper;
 
     private EditText mSeriesTitleText;
     private EditText mSeasonNumText;
@@ -20,7 +20,7 @@ public class SeriesEdit extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        mDbHelper = new SeriesTickerDbAdapter(this);
+        mDbHelper = new EpisodicDbAdapter(this);
         mDbHelper.open();
         
         setContentView(R.layout.series_edit);
@@ -32,10 +32,10 @@ public class SeriesEdit extends Activity {
         Button confirmButton = (Button) findViewById(R.id.confirm);
 
         mRowId = (savedInstanceState == null) ? null :
-            (Long) savedInstanceState.getSerializable(SeriesTickerDbAdapter.KEY_ROWID);
+            (Long) savedInstanceState.getSerializable(EpisodicDbAdapter.KEY_ROWID);
         if (mRowId == null) {
             Bundle extras = getIntent().getExtras();
-            mRowId = extras != null ? extras.getLong(SeriesTickerDbAdapter.KEY_ROWID)
+            mRowId = extras != null ? extras.getLong(EpisodicDbAdapter.KEY_ROWID)
                                     : null;
         }
         
@@ -56,11 +56,11 @@ public class SeriesEdit extends Activity {
 	        Cursor series = mDbHelper.fetchSeries(mRowId);
 	        startManagingCursor(series);
 	        mSeriesTitleText.setText(series.getString(
-	                    series.getColumnIndexOrThrow(SeriesTickerDbAdapter.KEY_SERIES_NAME)));
+	                    series.getColumnIndexOrThrow(EpisodicDbAdapter.KEY_SERIES_NAME)));
 	        mSeasonNumText.setText(series.getString(
-	                series.getColumnIndexOrThrow(SeriesTickerDbAdapter.KEY_SEASON_NUM)));
+	                series.getColumnIndexOrThrow(EpisodicDbAdapter.KEY_SEASON_NUM)));
 	        mEpisodeNumText.setText(series.getString(
-	                series.getColumnIndexOrThrow(SeriesTickerDbAdapter.KEY_EPISODE_NUM)));
+	                series.getColumnIndexOrThrow(EpisodicDbAdapter.KEY_EPISODE_NUM)));
 	    }
 	}
 
@@ -80,13 +80,26 @@ public class SeriesEdit extends Activity {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
         saveState();
-        outState.putSerializable(SeriesTickerDbAdapter.KEY_ROWID, mRowId);
+        outState.putSerializable(EpisodicDbAdapter.KEY_ROWID, mRowId);
 	}
 	
 	private void saveState() {
         String seriesTitle = mSeriesTitleText.getText().toString();
-        Integer seasonNum = Integer.valueOf(mSeasonNumText.getText().toString());
-        Integer episodeNum = Integer.valueOf(mEpisodeNumText.getText().toString());
+        
+        Integer seasonNum = 0;
+        Integer episodeNum = 0;
+        
+        try {
+        	seasonNum = Integer.valueOf(mSeasonNumText.getText().toString());
+        } catch (NumberFormatException nfe) {
+        	// do nothing already set to 0 as default
+        }
+        
+        try {
+        	episodeNum = Integer.valueOf(mEpisodeNumText.getText().toString());
+        } catch (NumberFormatException nfe) {
+        	// do nothing already set to 0 as default
+        }
 
         if (mRowId == null) {
             long id = mDbHelper.createSeries(seriesTitle, seasonNum, episodeNum);

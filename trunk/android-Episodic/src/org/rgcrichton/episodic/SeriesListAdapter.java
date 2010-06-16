@@ -1,4 +1,4 @@
-package org.rgcrichton.seriesticker;
+package org.rgcrichton.episodic;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -10,13 +10,13 @@ import android.widget.SimpleCursorAdapter;
 
 public class SeriesListAdapter extends SimpleCursorAdapter {
 	
-	private SeriesTickerDbAdapter mDbHelper;
-	private SeriesTicker seriesTicker;
+	private EpisodicDbAdapter mDbHelper;
+	private Episodic seriesTicker;
 
-	public SeriesListAdapter(SeriesTicker seriesTicker, int layout, Cursor c,
+	public SeriesListAdapter(Episodic seriesTicker, int layout, Cursor c,
 			String[] from, int[] to) {
 		super(seriesTicker, layout, c, from, to);
-		mDbHelper = new SeriesTickerDbAdapter(seriesTicker);
+		mDbHelper = new EpisodicDbAdapter(seriesTicker);
 		this.seriesTicker = seriesTicker;
 	}
 
@@ -65,7 +65,7 @@ public class SeriesListAdapter extends SimpleCursorAdapter {
 
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
-		int columnIndex = cursor.getColumnIndex(SeriesTickerDbAdapter.KEY_ROWID);
+		int columnIndex = cursor.getColumnIndex(EpisodicDbAdapter.KEY_ROWID);
 		Long rowId = cursor.getLong(columnIndex);
 		
 		View seasonButtonView = view.findViewById(R.id.season_plus_button);
