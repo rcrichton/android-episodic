@@ -1,0 +1,5 @@
+== Planned UI Design for next version ==
+
+Rev 1:
+
+http://android-episodic.googlecode.com/svn/wiki/images/myImage.png
