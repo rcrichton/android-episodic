@@ -1,5 +1,10 @@
+#labels Phase-Design
 == Planned UI Design for next version ==
 
 Rev 1:
 
 http://android-episodic.googlecode.com/svn/wiki/images/myImage.png
+
+== Photoshop Mockup ==
+
+http://android-episodic.googlecode.com/svn/wiki/images/UI-Concepts.png
