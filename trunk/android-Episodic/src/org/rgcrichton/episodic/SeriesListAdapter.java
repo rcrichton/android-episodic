@@ -4,20 +4,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.SimpleCursorAdapter;
 
 public class SeriesListAdapter extends SimpleCursorAdapter {
 	
 	private EpisodicDbAdapter mDbHelper;
-	private Episodic seriesTicker;
+	private Episodic episodic;
 
-	public SeriesListAdapter(Episodic seriesTicker, int layout, Cursor c,
+	public SeriesListAdapter(Episodic episodic, int layout, Cursor c,
 			String[] from, int[] to) {
-		super(seriesTicker, layout, c, from, to);
-		mDbHelper = new EpisodicDbAdapter(seriesTicker);
-		this.seriesTicker = seriesTicker;
+		super(episodic, layout, c, from, to);
+		mDbHelper = new EpisodicDbAdapter(episodic);
+		this.episodic = episodic;
 	}
 
 	@Override
@@ -27,6 +26,9 @@ public class SeriesListAdapter extends SimpleCursorAdapter {
 		Button seasonButton = (Button) view.findViewById(R.id.season_plus_button);
 		Button episodeButton = (Button) view.findViewById(R.id.episode_plus_button);
 		
+		seasonButton.setFocusable(false);
+		episodeButton.setFocusable(false);
+		
 		seasonButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
@@ -34,7 +36,7 @@ public class SeriesListAdapter extends SimpleCursorAdapter {
             	mDbHelper.open();
                 mDbHelper.incrementSeason(rowId);
                 mDbHelper.close();
-                seriesTicker.refreshData();
+                episodic.refreshData();
             }
 
         });
@@ -46,27 +48,23 @@ public class SeriesListAdapter extends SimpleCursorAdapter {
             	mDbHelper.open();
             	mDbHelper.incrementEpisode(rowId);
             	mDbHelper.close();
-            	seriesTicker.refreshData();
+            	episodic.refreshData();
             }
 
         });
 		
-		view.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View view) {
-				View seasonButtonView = view.findViewById(R.id.season_plus_button);
-				seriesTicker.customOnListItemClick((Long)(seasonButtonView.getTag()));
-			}
-		});
+		seasonButton.setFocusable(false);
+		episodeButton.setFocusable(false);
 		
-		return view; 
+		return view;
 	}
 
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
 		int columnIndex = cursor.getColumnIndex(EpisodicDbAdapter.KEY_ROWID);
 		Long rowId = cursor.getLong(columnIndex);
+		
+		view.setTag(rowId);
 		
 		View seasonButtonView = view.findViewById(R.id.season_plus_button);
 		seasonButtonView.setTag(rowId);

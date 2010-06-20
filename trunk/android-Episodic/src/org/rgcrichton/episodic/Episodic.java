@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class Episodic extends ListActivity {
@@ -28,6 +29,7 @@ public class Episodic extends ListActivity {
 		mDbHelper = new EpisodicDbAdapter(this);
 		mDbHelper.open();
 		refreshData();
+		registerForContextMenu(getListView());
 	}
 
 	public void refreshData() {
@@ -117,10 +119,13 @@ public class Episodic extends ListActivity {
 		}
 		return super.onContextItemSelected(item);
 	}
-	
-    public void customOnListItemClick(long id) {
-    	Intent i = new Intent(this, SeriesEdit.class);
+
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		Intent i = new Intent(this, SeriesEdit.class);
         i.putExtra(EpisodicDbAdapter.KEY_ROWID, id);
         startActivityForResult(i, ACTIVITY_EDIT);
-    }
+	}
+	
 }
