@@ -3,8 +3,14 @@
 
 Rev 1:
 
+=== Quick mockup ===
+
+Overall UI:
+
 http://android-episodic.googlecode.com/svn/wiki/images/myImage.png
 
-== Photoshop Mockup ==
+=== Photoshop Mockup ===
+
+What each list item should look like:
 
 http://android-episodic.googlecode.com/svn/wiki/images/UI-Concepts.png
