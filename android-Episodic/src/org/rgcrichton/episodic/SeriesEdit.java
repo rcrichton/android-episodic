@@ -101,13 +101,16 @@ public class SeriesEdit extends Activity {
         	// do nothing already set to 0 as default
         }
 
-        if (mRowId == null) {
-            long id = mDbHelper.createSeries(seriesTitle, seasonNum, episodeNum);
-            if (id > 0) {
-                mRowId = id;
-            }
-        } else {
-            mDbHelper.updateSeries(mRowId, seriesTitle, seasonNum, episodeNum);
+        // Save only if title has some text
+        if (seriesTitle.length() > 0) {
+	        if (mRowId == null) {
+	            long id = mDbHelper.createSeries(seriesTitle, seasonNum, episodeNum);
+	            if (id > 0) {
+	                mRowId = id;
+	            }
+	        } else {
+	            mDbHelper.updateSeries(mRowId, seriesTitle, seasonNum, episodeNum);
+	        }
         }
     }
 }
