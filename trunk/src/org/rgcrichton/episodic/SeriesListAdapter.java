@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.SimpleCursorAdapter;
 
 public class SeriesListAdapter extends SimpleCursorAdapter {
@@ -23,8 +23,8 @@ public class SeriesListAdapter extends SimpleCursorAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View view = super.getView(position, convertView, parent);
 		
-		Button seasonButton = (Button) view.findViewById(R.id.season_plus_button);
-		Button episodeButton = (Button) view.findViewById(R.id.episode_plus_button);
+		ImageButton seasonButton = (ImageButton) view.findViewById(R.id.season_plus_button);
+		ImageButton episodeButton = (ImageButton) view.findViewById(R.id.episode_plus_button);
 		
 		seasonButton.setFocusable(false);
 		episodeButton.setFocusable(false);
