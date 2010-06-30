@@ -4,40 +4,70 @@
 	android:layout_width="fill_parent"
     android:layout_height="wrap_content">
     
-	<TextView android:id="@+id/series_name" 
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="3"/>
+    <LinearLayout android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:orientation="vertical"
+    	android:layout_weight="10"
+    	android:gravity="center_vertical">
+    
+		<TextView android:id="@+id/series_name" 
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"/>
+		    
+		<LinearLayout android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:paddingLeft="8sp">
 	    
-	<TextView android:text="@string/season_code"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:gravity="right"/>
-	<TextView android:id="@+id/season_num"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:gravity="right"/>
+			<TextView android:text="@string/season_code"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:textSize="10sp"/>
+			    
+			<TextView android:id="@+id/season_num"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:textSize="12sp"
+			    android:paddingLeft="4sp"
+			    android:paddingRight="4sp"
+			    android:textStyle="bold"
+			    android:textColor="@color/orange"/>
+			    
+			<TextView android:text="@string/episode_code"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:textSize="10sp"/>
+			    
+			<TextView android:id="@+id/episode_num"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:textSize="12sp"
+			    android:paddingLeft="4sp"
+			    android:paddingRight="4sp"
+			    android:textStyle="bold"
+			    android:textColor="@color/blue"/>
+			    
+		</LinearLayout>
+		
+	</LinearLayout>
 	    
-	<Button android:text="@string/plus"
+	<ImageButton android:text="@string/plus"
 		android:focusable="false"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:id="@+id/season_plus_button"
-		android:gravity="right"/>
-		
-	<TextView android:text="@string/episode_code"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:gravity="right"/>
-	<TextView android:id="@+id/episode_num"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:gravity="right"/>
+		android:gravity="right"
+		android:layout_gravity="right"
+		android:src="@drawable/plus_orange" android:background="@color/transparent" android:padding="5sp"/>
+		<!-- android:background="@color/transparent" -->
 
-	<Button android:text="@string/plus"
+	<ImageButton android:text="@string/plus"
 		android:focusable="false"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:id="@+id/episode_plus_button"
-		android:gravity="right"/>
+		android:gravity="right"
+		android:layout_gravity="right"
+		android:src="@drawable/plus_blue" android:background="@color/transparent" android:padding="5sp"/>
+		<!-- android:background="@color/transparent" -->
+		
 </LinearLayout>

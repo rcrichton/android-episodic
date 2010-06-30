@@ -9,7 +9,10 @@
 <string name="season_num">Season Number:</string>
 <string name="episode_num">Episode Number:</string>
 <string name="confirm">Confirm</string>
-<string name="season_code">S</string>
-<string name="episode_code">E</string>
+<string name="season_code">Season:</string>
+<string name="episode_code">Episode:</string>
 <string name="plus">+</string>
+<color name="orange">#FF9933</color>
+<color name="blue">#3333FF</color>
+<color name="transparent">#0000</color>
 </resources>
