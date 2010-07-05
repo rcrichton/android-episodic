@@ -1,7 +1,7 @@
 #labels Phase-Design
 == Planned UI Design for next version ==
 
-Rev 1:
+Rev 2:
 
 === Quick mockup ===
 
