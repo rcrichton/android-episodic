@@ -1,0 +1,4 @@
+#labels Phase-Design
+== Proposed Database Model ==
+
+http://android-episodic.googlecode.com/svn/wiki/images/EpisodicProposeddatabasemodel.png
