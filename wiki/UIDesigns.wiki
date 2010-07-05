@@ -7,7 +7,7 @@ Rev 1:
 
 Overall UI:
 
-http://android-episodic.googlecode.com/svn/wiki/images/myImage.png
+http://android-episodic.googlecode.com/svn/wiki/images/UI%20Designs.png
 
 === Photoshop Mockup ===
 
