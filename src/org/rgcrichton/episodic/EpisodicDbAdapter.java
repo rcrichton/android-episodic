@@ -15,12 +15,23 @@ import android.util.Log;
 
 public class EpisodicDbAdapter {
 	
-	private static final String DATABASE_TABLE = "series_ticker";
+	// Series table and its columns
+	private static final String SERIES_TICKER_TABLE = "series_ticker";
 	public static final String KEY_ROWID = "_id";
 	public static final String KEY_SERIES_NAME = "series_name";
 	public static final String KEY_SEASON_NUM = "season_num";
 	public static final String KEY_EPISODE_NUM = "episode_num";
-	public static final String KEY_TAGS = "tags";
+	
+	// Tags table and its columns
+	private static final String TAGS_TABLE = "tags";
+	// public static final String KEY_ROWID = "_id";
+	public static final String KEY_TAG_NAME = "tag_name";
+	
+	// Series to tags table. Joins series and tags
+	private static final String SERIES_TICKER_TO_TAGS_TABLE = "series_ticker_to_tags_table";
+	// public static final String KEY_ROWID = "_id";
+	public static final String KEY_SERIES_TICKER_ID = "series_ticker_id";
+	public static final String KEY_TAG_ID = "tag_id";
 	
 	//The Android's default system path of your application database.
     private static final String DB_PATH = "/data/data/org.rgcrichton.episodic/databases/";
@@ -73,7 +84,7 @@ public class EpisodicDbAdapter {
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(this.getClass().toString(), "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE);
+            //db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE);
             onCreate(db);
         }
     }
@@ -95,31 +106,30 @@ public class EpisodicDbAdapter {
     }
 
 
-    public long createSeries(String seriesName, Integer seasonNum, Integer episodeNum, String tags) {
+    public long createSeries(String seriesName, Integer seasonNum, Integer episodeNum) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_SERIES_NAME, seriesName);
         initialValues.put(KEY_SEASON_NUM, seasonNum);
         initialValues.put(KEY_EPISODE_NUM, episodeNum);
-        initialValues.put(KEY_TAGS, tags);
 
-        return mDb.insert(DATABASE_TABLE, null, initialValues);
+        return mDb.insert(SERIES_TICKER_TABLE, null, initialValues);
     }
 
     public boolean deleteSeries(long rowId) {
-        return mDb.delete(DATABASE_TABLE, KEY_ROWID + "=" + rowId, null) > 0;
+        return mDb.delete(SERIES_TICKER_TABLE, KEY_ROWID + "=" + rowId, null) > 0;
     }
 
     public Cursor fetchAllSeries() {
-        return mDb.query(DATABASE_TABLE, new String[] {KEY_ROWID, KEY_SERIES_NAME,
-                KEY_SEASON_NUM, KEY_EPISODE_NUM, KEY_TAGS}, null, null, null, null, null);
+        return mDb.query(SERIES_TICKER_TABLE, new String[] {KEY_ROWID, KEY_SERIES_NAME,
+                KEY_SEASON_NUM, KEY_EPISODE_NUM}, null, null, null, null, null);
     }
 
     public Cursor fetchSeries(long rowId) throws SQLException {
 
         Cursor mCursor =
 
-            mDb.query(true, DATABASE_TABLE, new String[] {KEY_ROWID, KEY_SERIES_NAME,
-                    KEY_SEASON_NUM, KEY_EPISODE_NUM, KEY_TAGS}, KEY_ROWID + "=" + rowId, null,
+            mDb.query(true, SERIES_TICKER_TABLE, new String[] {KEY_ROWID, KEY_SERIES_NAME,
+                    KEY_SEASON_NUM, KEY_EPISODE_NUM}, KEY_ROWID + "=" + rowId, null,
                     null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -128,14 +138,13 @@ public class EpisodicDbAdapter {
 
     }
     
-    public boolean updateSeries(long rowId, String seriesName, Integer seasonNum, Integer episodeNum, String tags) {
+    public boolean updateSeries(long rowId, String seriesName, Integer seasonNum, Integer episodeNum) {
         ContentValues args = new ContentValues();
         args.put(KEY_SERIES_NAME, seriesName);
         args.put(KEY_SEASON_NUM, seasonNum);
         args.put(KEY_EPISODE_NUM, episodeNum);
-        args.put(KEY_TAGS, tags);
 
-        return mDb.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
+        return mDb.update(SERIES_TICKER_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
     }
 
 	public boolean incrementSeason(Long rowId) {
@@ -145,7 +154,7 @@ public class EpisodicDbAdapter {
 		ContentValues args = new ContentValues();
         args.put(KEY_SEASON_NUM, seasonNum + 1);
 
-        return mDb.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
+        return mDb.update(SERIES_TICKER_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
 	}
 
 	public boolean incrementEpisode(Long rowId) {
@@ -155,6 +164,35 @@ public class EpisodicDbAdapter {
 		ContentValues args = new ContentValues();
         args.put(KEY_EPISODE_NUM, episodeNum + 1);
 
-        return mDb.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
+        return mDb.update(SERIES_TICKER_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
 	}
+	
+	public long createTag(String tagName) {
+		ContentValues initialValues = new ContentValues();
+        initialValues.put(KEY_TAG_NAME, tagName);
+
+        return mDb.insert(TAGS_TABLE, null, initialValues);
+	}
+	
+	public Cursor fetchTags(long rowId) throws SQLException {
+		String fetchTagsQuery = "SELECT a." + KEY_ROWID + " a." + KEY_TAG_NAME + " FROM " + TAGS_TABLE + " a, " + SERIES_TICKER_TO_TAGS_TABLE + " b where a." + KEY_ROWID + 
+								" = b." + KEY_TAG_ID + " and b." + KEY_SERIES_TICKER_ID + " = " + rowId;
+        Cursor mCursor = mDb.rawQuery(fetchTagsQuery, null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        
+        return mCursor;
+    }
+	
+	public boolean updateTag(long rowId, String tagName) {
+        ContentValues args = new ContentValues();
+        args.put(KEY_TAG_NAME, tagName);
+
+        return mDb.update(TAGS_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
+    }
+	
+	public boolean deleteTag(long rowId) {
+        return mDb.delete(TAGS_TABLE, KEY_ROWID + "=" + rowId, null) > 0;
+    }
 }
