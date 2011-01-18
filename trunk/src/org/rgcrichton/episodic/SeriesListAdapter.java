@@ -73,9 +73,5 @@ public class SeriesListAdapter extends SimpleCursorAdapter {
 		episodeButtonView.setTag(rowId);
 		
 		super.bindView(view, context, cursor);
-		
 	}
-	
-	
-
 }

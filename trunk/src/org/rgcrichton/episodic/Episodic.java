@@ -18,6 +18,7 @@ public class Episodic extends ListActivity {
 
 	private static final int INSERT_ID = Menu.FIRST;
 	private static final int DELETE_ID = Menu.FIRST + 1;
+	private static final int FILTER_ID = Menu.FIRST + 2;
 
 	private EpisodicDbAdapter mDbHelper;
 
@@ -88,6 +89,7 @@ public class Episodic extends ListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, INSERT_ID, 0, R.string.menu_add);
+		menu.add(0, FILTER_ID, 0, R.string.menu_filter);
 		return true;
 	}
 
@@ -97,12 +99,21 @@ public class Episodic extends ListActivity {
 		case INSERT_ID:
 			createSeries();
 			return true;
+			
+		case FILTER_ID:
+			filterSeries();
+			return true;
 		}
 
 		return super.onMenuItemSelected(featureId, item);
 	}
 
 	private void createSeries() {
+		Intent i = new Intent(this, SeriesEdit.class);
+        startActivityForResult(i, ACTIVITY_CREATE);
+	}
+	
+	private void filterSeries() {
 		Intent i = new Intent(this, SeriesEdit.class);
         startActivityForResult(i, ACTIVITY_CREATE);
 	}

@@ -15,4 +15,6 @@
 <color name="orange">#FF9933</color>
 <color name="blue">#3333FF</color>
 <color name="transparent">#0000</color>
+<string name="tags">Tags:</string>
+<string name="menu_filter">Filter</string>
 </resources>
