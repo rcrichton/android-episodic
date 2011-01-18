@@ -51,7 +51,7 @@ public class EpisodicDbAdapter {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-        	this.getReadableDatabase();
+        	//this.getReadableDatabase();
             
         	try {
 	            //Open your local db as the input stream
@@ -85,7 +85,7 @@ public class EpisodicDbAdapter {
             Log.w(this.getClass().toString(), "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
             //db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE);
-            onCreate(db);
+            //onCreate(db);
         }
     }
     
