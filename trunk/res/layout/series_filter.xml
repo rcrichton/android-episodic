@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent">
-<ListView android:id="@+id/tagsList" android:layout_width="wrap_content" android:layout_height="wrap_content"></ListView>
-<Button android:text="@+id/filter" android:id="@+id/filterButton" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	<ListView android:id="@+id/tagsList" android:layout_width="wrap_content"
+		android:layout_height="wrap_content"></ListView>
+	<TableLayout>
+		<TableRow android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+			<EditText android:id="@+id/tag" android:inputType="text"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:layout_weight="1" android:scrollbars="vertical" />
+			<Button android:text="@string/save_tag" android:id="@+id/save_tag"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+		</TableRow>
+	</TableLayout>
+	<Button android:text="@string/confirm" android:id="@+id/filterButton"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 </LinearLayout>

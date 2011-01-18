@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class SeriesEdit extends Activity {
 	
@@ -14,6 +15,7 @@ public class SeriesEdit extends Activity {
     private EditText mSeriesTitleText;
     private EditText mSeasonNumText;
     private EditText mEpisodeNumText;
+    private TextView mTagsTextView;
     private Long mRowId;
 
     @Override
@@ -28,6 +30,7 @@ public class SeriesEdit extends Activity {
         mSeriesTitleText = (EditText) findViewById(R.id.series_name);
         mSeasonNumText = (EditText) findViewById(R.id.season_num);
         mEpisodeNumText = (EditText) findViewById(R.id.episode_num);
+        mTagsTextView = (TextView) findViewById(R.id.tags);
 
         Button confirmButton = (Button) findViewById(R.id.confirm);
 
@@ -61,6 +64,20 @@ public class SeriesEdit extends Activity {
 	                series.getColumnIndexOrThrow(EpisodicDbAdapter.KEY_SEASON_NUM)));
 	        mEpisodeNumText.setText(series.getString(
 	                series.getColumnIndexOrThrow(EpisodicDbAdapter.KEY_EPISODE_NUM)));
+	        
+	        // fetch tags for this series
+	        Cursor tags = mDbHelper.fetchTags(mRowId);
+	        String tagsStr = "";
+	        while (tags.isAfterLast()) {
+	        	//tags.getInt(tags.getColumnIndex(EpisodicDbAdapter.KEY_ROWID));
+	        	String tagName = tags.getString(tags.getColumnIndex(EpisodicDbAdapter.KEY_ROWID));
+	        	if (tagName.length() == 0) {
+	        		tagsStr += tagName;
+	        	} else {
+	        		tagsStr += ", " + tagName;
+	        	}
+	        }
+	        mTagsTextView.setText(tagsStr);
 	    }
 	}
 
@@ -100,7 +117,7 @@ public class SeriesEdit extends Activity {
         } catch (NumberFormatException nfe) {
         	// do nothing already set to 0 as default
         }
-
+        
         // Save only if title has some text
         if (seriesTitle.length() > 0) {
 	        if (mRowId == null) {
