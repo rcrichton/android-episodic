@@ -68,7 +68,7 @@ public class SeriesEdit extends Activity {
 	        // fetch tags for this series
 	        Cursor tags = mDbHelper.fetchTags(mRowId);
 	        String tagsStr = "";
-	        while (tags.isAfterLast()) {
+	        while (!tags.isAfterLast()) {
 	        	//tags.getInt(tags.getColumnIndex(EpisodicDbAdapter.KEY_ROWID));
 	        	String tagName = tags.getString(tags.getColumnIndex(EpisodicDbAdapter.KEY_ROWID));
 	        	if (tagName.length() == 0) {
