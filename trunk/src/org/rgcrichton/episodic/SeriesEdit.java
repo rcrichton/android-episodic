@@ -14,7 +14,6 @@ public class SeriesEdit extends Activity {
     private EditText mSeriesTitleText;
     private EditText mSeasonNumText;
     private EditText mEpisodeNumText;
-    private EditText mTagsText;
     private Long mRowId;
 
     @Override
@@ -29,7 +28,6 @@ public class SeriesEdit extends Activity {
         mSeriesTitleText = (EditText) findViewById(R.id.series_name);
         mSeasonNumText = (EditText) findViewById(R.id.season_num);
         mEpisodeNumText = (EditText) findViewById(R.id.episode_num);
-        mTagsText = (EditText) findViewById(R.id.tags);
 
         Button confirmButton = (Button) findViewById(R.id.confirm);
 
@@ -63,8 +61,6 @@ public class SeriesEdit extends Activity {
 	                series.getColumnIndexOrThrow(EpisodicDbAdapter.KEY_SEASON_NUM)));
 	        mEpisodeNumText.setText(series.getString(
 	                series.getColumnIndexOrThrow(EpisodicDbAdapter.KEY_EPISODE_NUM)));
-	        mTagsText.setText(series.getString(
-	                series.getColumnIndexOrThrow(EpisodicDbAdapter.KEY_TAGS)));
 	    }
 	}
 
@@ -104,18 +100,16 @@ public class SeriesEdit extends Activity {
         } catch (NumberFormatException nfe) {
         	// do nothing already set to 0 as default
         }
-        
-        String tags = mTagsText.getText().toString();
 
         // Save only if title has some text
         if (seriesTitle.length() > 0) {
 	        if (mRowId == null) {
-	            long id = mDbHelper.createSeries(seriesTitle, seasonNum, episodeNum, tags);
+	            long id = mDbHelper.createSeries(seriesTitle, seasonNum, episodeNum);
 	            if (id > 0) {
 	                mRowId = id;
 	            }
 	        } else {
-	            mDbHelper.updateSeries(mRowId, seriesTitle, seasonNum, episodeNum, tags);
+	            mDbHelper.updateSeries(mRowId, seriesTitle, seasonNum, episodeNum);
 	        }
         }
     }
