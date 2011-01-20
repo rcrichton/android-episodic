@@ -20,4 +20,6 @@
 <string name="no_tags">No tags set</string>
 <string name="add_tags">Add tags</string>
 <string name="save_tag"> + </string>
+<string name="menu_settings">Settings</string>
+
 </resources>
