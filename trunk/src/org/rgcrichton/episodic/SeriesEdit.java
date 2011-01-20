@@ -63,7 +63,7 @@ public class SeriesEdit extends Activity {
         addTagsButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                Intent i = new Intent(ctx, SeriesFilter.class);
+                Intent i = new Intent(ctx, TagList.class);
                 i.putExtra(EpisodicDbAdapter.KEY_ROWID, mRowId);
                 startActivityForResult(i, 0);
             }
