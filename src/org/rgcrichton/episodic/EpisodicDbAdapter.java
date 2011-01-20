@@ -238,6 +238,10 @@ public class EpisodicDbAdapter {
         return mDb.insert(TAGS_TABLE, null, initialValues);
 	}
 	
+    public Cursor fetchAllTags() {
+        return mDb.query(TAGS_TABLE, new String[] {KEY_ROWID, KEY_TAG_NAME}, null, null, null, null, null);
+    }
+	
 	public Cursor fetchTags(long rowId) throws SQLException {
 		String fetchTagsQuery = "SELECT a." + KEY_ROWID + ", a." + KEY_TAG_NAME + " FROM " + TAGS_TABLE + " a, " + SERIES_TICKER_TO_TAGS_TABLE + " b where a." + KEY_ROWID + 
 								" = b." + KEY_TAG_ID + " and b." + KEY_SERIES_TICKER_ID + " = " + rowId;

@@ -11,6 +11,7 @@
 
     <activity android:name=".SeriesEdit"></activity>
 <activity android:name=".EpisodicSettings"></activity>
+<activity android:name="TagList"></activity>
 </application>
 
 
