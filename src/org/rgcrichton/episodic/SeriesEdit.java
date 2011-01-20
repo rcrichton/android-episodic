@@ -1,6 +1,8 @@
 package org.rgcrichton.episodic;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +19,8 @@ public class SeriesEdit extends Activity {
     private EditText mEpisodeNumText;
     private TextView mTagsTextView;
     private Long mRowId;
+    
+    private Context ctx = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,9 @@ public class SeriesEdit extends Activity {
         mTagsTextView = (TextView) findViewById(R.id.tags);
 
         Button confirmButton = (Button) findViewById(R.id.confirm);
+        
+        Button addTagsButton = (Button) findViewById(R.id.add_tags);
+        
 
         mRowId = (savedInstanceState == null) ? null :
             (Long) savedInstanceState.getSerializable(EpisodicDbAdapter.KEY_ROWID);
@@ -49,6 +56,16 @@ public class SeriesEdit extends Activity {
             public void onClick(View view) {
                 setResult(RESULT_OK);
                 finish();
+            }
+
+        });
+        
+        addTagsButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                Intent i = new Intent(ctx, SeriesFilter.class);
+                i.putExtra(EpisodicDbAdapter.KEY_ROWID, mRowId);
+                startActivityForResult(i, 0);
             }
 
         });
