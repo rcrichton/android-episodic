@@ -35,6 +35,9 @@ public class SeriesListAdapter extends SimpleCursorAdapter {
             	Long rowId = (Long) view.getTag();
             	mDbHelper.open();
                 mDbHelper.incrementSeason(rowId);
+                if (episodic.GetResetEpisodeOnNextSeason()) {
+                	mDbHelper.resetEpisode(rowId);
+                }
                 mDbHelper.close();
                 episodic.refreshData();
             }

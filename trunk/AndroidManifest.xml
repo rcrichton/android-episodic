@@ -10,6 +10,7 @@
         </activity>
 
     <activity android:name=".SeriesEdit"></activity>
+<activity android:name=".EpisodicSettings"></activity>
 </application>
 
 

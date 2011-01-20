@@ -1,5 +1,7 @@
 package org.rgcrichton.episodic;
 
+import java.util.ArrayList;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,10 +17,18 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 public class Episodic extends ListActivity {
 	private static final int ACTIVITY_CREATE = 0;
 	private static final int ACTIVITY_EDIT = 1;
+	private static final int ACTIVITY_FILTER = 2;
+	private static final int ACTIVITY_SETTINGS = 3;
 
 	private static final int INSERT_ID = Menu.FIRST;
 	private static final int DELETE_ID = Menu.FIRST + 1;
 	private static final int FILTER_ID = Menu.FIRST + 2;
+	private static final int SETTINGS_ID = Menu.FIRST + 3;
+	
+	private final int mResetEpisodeOnNextSeasonID = 0;
+	private final int mDisableAdsID = 1;
+	private boolean mDisableAds = false;
+	private boolean mResetEpisodeOnNextSeason = false;
 
 	private EpisodicDbAdapter mDbHelper;
 
@@ -34,6 +44,9 @@ public class Episodic extends ListActivity {
 	}
 
 	public void refreshData() {
+		// Get the settings from the DB.
+		updateSettings();
+		
 		// Get all of the rows from the database and create the item list
 		Cursor seriesCursor = mDbHelper.fetchAllSeries();
 		startManagingCursor(seriesCursor);
@@ -57,6 +70,34 @@ public class Episodic extends ListActivity {
 				R.layout.series_row, seriesCursor, from, to);
 		
 		setListAdapter(series);
+	}
+
+	private void updateSettings() {
+		Cursor settingsCursor = mDbHelper.fetchSettings();
+		
+		while (!settingsCursor.isAfterLast()) {
+			boolean settingValue = settingsCursor.getInt(settingsCursor.getColumnIndex(EpisodicDbAdapter.KEY_SETTING_VALUE)) > 0 ? true : false;
+			
+			switch (settingsCursor.getInt(settingsCursor.getColumnIndex(EpisodicDbAdapter.KEY_ROWID))) {
+				case mResetEpisodeOnNextSeasonID:
+					mResetEpisodeOnNextSeason = settingValue;
+					break;
+				
+				case mDisableAdsID:
+					mDisableAds = settingValue;
+					break;
+			}
+			
+			settingsCursor.moveToNext();
+		}
+	}
+	
+	public boolean GetDisableAds() {
+		return mDisableAds;
+	}
+	
+	public boolean GetResetEpisodeOnNextSeason() {
+		return mResetEpisodeOnNextSeason;
 	}
 
 	@Override
@@ -90,19 +131,24 @@ public class Episodic extends ListActivity {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, INSERT_ID, 0, R.string.menu_add);
 		menu.add(0, FILTER_ID, 0, R.string.menu_filter);
+		menu.add(0, SETTINGS_ID, 0, R.string.menu_settings);
 		return true;
 	}
 
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
-		case INSERT_ID:
-			createSeries();
-			return true;
+			case INSERT_ID:
+				createSeries();
+				return true;
+				
+			case FILTER_ID:
+				filterSeries();
+				return true;
 			
-		case FILTER_ID:
-			filterSeries();
-			return true;
+			case SETTINGS_ID:
+				episodicSettings();
+				return true;
 		}
 
 		return super.onMenuItemSelected(featureId, item);
@@ -116,6 +162,11 @@ public class Episodic extends ListActivity {
 	private void filterSeries() {
 		Intent i = new Intent(this, SeriesEdit.class);
         startActivityForResult(i, ACTIVITY_CREATE);
+	}
+	
+	private void episodicSettings() {
+		Intent i = new Intent(this, EpisodicSettings.class);
+		startActivityForResult(i, ACTIVITY_SETTINGS);
 	}
 
 	@Override

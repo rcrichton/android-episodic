@@ -34,6 +34,12 @@ public class EpisodicDbAdapter {
 	public static final String KEY_SERIES_TICKER_ID = "series_ticker_id";
 	public static final String KEY_TAG_ID = "tags_id";
 	
+	// Settings table
+	private static final String SETTINGS_TABLE = "settings";
+	// public static final String KEY_ROWID = "_id";
+	public static final String KEY_SETTING_TEXT = "setting_text";
+	public static final String KEY_SETTING_VALUE = "setting_value";
+	
 	//The Android's default system path of your application database.
     private static final String DB_PATH = "/data/data/org.rgcrichton.episodic/databases/";
 	private static final String DATABASE_NAME = "data";
@@ -177,15 +183,15 @@ public class EpisodicDbAdapter {
 
     public Cursor fetchSeries(long rowId) throws SQLException {
 
-        Cursor mCursor =
+        Cursor cursor =
 
             mDb.query(true, SERIES_TICKER_TABLE, new String[] {KEY_ROWID, KEY_SERIES_NAME,
                     KEY_SEASON_NUM, KEY_EPISODE_NUM}, KEY_ROWID + "=" + rowId, null,
                     null, null, null, null);
-        if (mCursor != null) {
-            mCursor.moveToFirst();
+        if (cursor != null) {
+            cursor.moveToFirst();
         }
-        return mCursor;
+        return cursor;
 
     }
     
@@ -218,6 +224,13 @@ public class EpisodicDbAdapter {
         return mDb.update(SERIES_TICKER_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
 	}
 	
+	public boolean resetEpisode(Long rowId) {		
+		ContentValues args = new ContentValues();
+        args.put(KEY_EPISODE_NUM, 1);
+
+        return mDb.update(SERIES_TICKER_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
+	}
+	
 	public long createTag(String tagName) {
 		ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_TAG_NAME, tagName);
@@ -228,12 +241,12 @@ public class EpisodicDbAdapter {
 	public Cursor fetchTags(long rowId) throws SQLException {
 		String fetchTagsQuery = "SELECT a." + KEY_ROWID + ", a." + KEY_TAG_NAME + " FROM " + TAGS_TABLE + " a, " + SERIES_TICKER_TO_TAGS_TABLE + " b where a." + KEY_ROWID + 
 								" = b." + KEY_TAG_ID + " and b." + KEY_SERIES_TICKER_ID + " = " + rowId;
-        Cursor mCursor = mDb.rawQuery(fetchTagsQuery, null);
-        if (mCursor != null) {
-            mCursor.moveToFirst();
+        Cursor cursor = mDb.rawQuery(fetchTagsQuery, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
         }
         
-        return mCursor;
+        return cursor;
     }
 	
 	public boolean updateTag(long rowId, String tagName) {
@@ -246,4 +259,25 @@ public class EpisodicDbAdapter {
 	public boolean deleteTag(long rowId) {
         return mDb.delete(TAGS_TABLE, KEY_ROWID + "=" + rowId, null) > 0;
     }
+	
+	public boolean updateSettings(long rowId, int settingValue) {
+        ContentValues args = new ContentValues();
+        args.put(KEY_SETTING_VALUE, settingValue);
+
+        return mDb.update(SETTINGS_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
+    }
+	
+	/**
+	 * Fetches all settings from the database and returns a Cursor to the first record.
+	 * @return
+	 * @throws SQLException
+	 */
+	public Cursor fetchSettings() throws SQLException {
+		Cursor cursor = mDb.query(true, SETTINGS_TABLE, new String[] {KEY_ROWID, KEY_SETTING_TEXT, KEY_SETTING_VALUE}, 
+							      null, null, null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+	}
 }
