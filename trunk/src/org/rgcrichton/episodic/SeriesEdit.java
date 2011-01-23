@@ -86,13 +86,14 @@ public class SeriesEdit extends Activity {
 	        Cursor tags = mDbHelper.fetchTags(mRowId);
 	        String tagsStr = "";
 	        while (!tags.isAfterLast()) {
-	        	//tags.getInt(tags.getColumnIndex(EpisodicDbAdapter.KEY_ROWID));
-	        	String tagName = tags.getString(tags.getColumnIndex(EpisodicDbAdapter.KEY_ROWID));
-	        	if (tagName.length() == 0) {
+	        	String tagName = tags.getString(tags.getColumnIndex(EpisodicDbAdapter.KEY_TAG_NAME));
+	        	if (tagsStr.length() <= 0) {
 	        		tagsStr += tagName;
 	        	} else {
 	        		tagsStr += ", " + tagName;
 	        	}
+	        	
+	        	tags.moveToNext();
 	        }
 	        mTagsTextView.setText(tagsStr);
 	    }

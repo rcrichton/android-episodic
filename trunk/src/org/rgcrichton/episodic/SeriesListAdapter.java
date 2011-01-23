@@ -15,7 +15,8 @@ public class SeriesListAdapter extends SimpleCursorAdapter {
 	public SeriesListAdapter(Episodic episodic, int layout, Cursor c,
 			String[] from, int[] to) {
 		super(episodic, layout, c, from, to);
-		mDbHelper = new EpisodicDbAdapter(episodic);
+		
+		this.mDbHelper = new EpisodicDbAdapter(episodic);
 		this.episodic = episodic;
 	}
 

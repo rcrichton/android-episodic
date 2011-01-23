@@ -12,7 +12,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class EpisodicDbAdapter {
 	
@@ -253,6 +252,12 @@ public class EpisodicDbAdapter {
         return cursor;
     }
 	
+	public boolean hasTag(long rowId, long tagId) {
+		Cursor cursor = mDb.query(SERIES_TICKER_TO_TAGS_TABLE, new String[] {KEY_SERIES_TICKER_ID, KEY_TAG_ID}, KEY_SERIES_TICKER_ID + "=" + rowId + " AND " + KEY_TAG_ID + "=" + tagId, null, null, null, null);
+		
+		return cursor.getCount() > 0 ? true : false;
+	}
+	
 	public boolean updateTag(long rowId, String tagName) {
         ContentValues args = new ContentValues();
         args.put(KEY_TAG_NAME, tagName);
@@ -271,6 +276,18 @@ public class EpisodicDbAdapter {
         return mDb.update(SETTINGS_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
     }
 	
+	public long addTagToSeries(long seriesRowId, long tagId) {
+		ContentValues initialValues = new ContentValues();
+        initialValues.put(KEY_SERIES_TICKER_ID, seriesRowId);
+        initialValues.put(KEY_TAG_ID, tagId);
+
+        return mDb.insert(SERIES_TICKER_TO_TAGS_TABLE, null, initialValues);
+	}
+	
+	public int removeTagFromSeries(long seriesRowId, long tagRowId) {
+		return mDb.delete(SERIES_TICKER_TO_TAGS_TABLE, KEY_SERIES_TICKER_ID + "=" + seriesRowId + " AND " + KEY_TAG_ID + "=" + tagRowId, null);
+	}
+	
 	/**
 	 * Fetches all settings from the database and returns a Cursor to the first record.
 	 * @return
@@ -284,4 +301,5 @@ public class EpisodicDbAdapter {
         }
         return cursor;
 	}
+
 }

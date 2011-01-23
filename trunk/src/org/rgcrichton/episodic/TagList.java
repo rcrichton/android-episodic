@@ -5,11 +5,15 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 
 public class TagList extends ListActivity {
 
 	private EpisodicDbAdapter mDbHelper;
+	private long seriesRowId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +21,8 @@ public class TagList extends ListActivity {
 
 		mDbHelper = new EpisodicDbAdapter(this);
 		mDbHelper.open();
+		
+		this.seriesRowId = (Long) this.getIntent().getExtras().get(EpisodicDbAdapter.KEY_ROWID);
 
 		setContentView(R.layout.tag_list);
 		
@@ -32,6 +38,22 @@ public class TagList extends ListActivity {
             }
 
         });
+		
+		Button addnewTagButton = (Button) findViewById(R.id.add_new_tag_button);
+
+		addnewTagButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+            	EditText newTagEditText = (EditText) findViewById(R.id.new_tag_edit_text);
+                String tagName = newTagEditText.getText().toString();
+                mDbHelper.open();
+                mDbHelper.createTag(tagName);
+                refreshData();
+                mDbHelper.close();
+                
+            }
+
+        });
 	}
 	
 	public void refreshData() {
@@ -40,16 +62,14 @@ public class TagList extends ListActivity {
 		startManagingCursor(tagsCursor);
 
 		// Create an array to specify the fields we want to display in the list
-		// (only TITLE)
 		String[] from = new String[] { EpisodicDbAdapter.KEY_TAG_NAME };
 
-		// and an array of the fields we want to bind those fields to (in this
-		// case just text1)
+		// and an array of the fields we want to bind those fields to
 		int[] to = new int[] { R.id.tag_name };
 
 		// Now create a simple cursor adapter and set it to display
 		TagListAdapter tags = new TagListAdapter(this,
-				R.layout.tag_row, tagsCursor, from, to);
+				R.layout.tag_row, tagsCursor, from, to, seriesRowId);
 		
 		setListAdapter(tags);
 	}
