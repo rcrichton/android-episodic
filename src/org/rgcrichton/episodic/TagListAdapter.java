@@ -19,7 +19,9 @@ public class TagListAdapter extends SimpleCursorAdapter {
 			String[] from, int[] to, long seriesRowId) {
 		super(tagList, layout, c, from, to);
 		
-		this.mDbHelper = new EpisodicDbAdapter(tagList);
+		mDbHelper = new EpisodicDbAdapter(tagList);
+		mDbHelper.open();
+		
 		this.tagList = tagList;
 		this.seriesRowId = seriesRowId;
 	}
@@ -42,22 +44,16 @@ public class TagListAdapter extends SimpleCursorAdapter {
 		
 		CheckBox checkbox = (CheckBox) view.findViewById(R.id.tag_checkbox);
 		
-		mDbHelper.open();
 		checkbox.setChecked(mDbHelper.hasTag(seriesRowId, (Long) checkbox.getTag()));
-		mDbHelper.close();
 		
 		checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				long tagRowId = (Long) buttonView.getTag();
 				if (isChecked) {
-					mDbHelper.open();
 					mDbHelper.addTagToSeries(seriesRowId, tagRowId);
-					mDbHelper.close();
 				} else {
-					mDbHelper.open();
 					mDbHelper.removeTagFromSeries(seriesRowId, tagRowId);
-					mDbHelper.close();
 				}
 			}
 		});
