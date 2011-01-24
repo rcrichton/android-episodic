@@ -10,9 +10,9 @@ import android.widget.SimpleCursorAdapter;
 public class SeriesListAdapter extends SimpleCursorAdapter {
 	
 	private EpisodicDbAdapter mDbHelper;
-	private Episodic episodic;
+	private SeriesList episodic;
 
-	public SeriesListAdapter(Episodic episodic, int layout, Cursor c,
+	public SeriesListAdapter(SeriesList episodic, int layout, Cursor c,
 			String[] from, int[] to) {
 		super(episodic, layout, c, from, to);
 		
