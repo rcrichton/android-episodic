@@ -16,7 +16,9 @@ public class SeriesListAdapter extends SimpleCursorAdapter {
 			String[] from, int[] to) {
 		super(episodic, layout, c, from, to);
 		
-		this.mDbHelper = new EpisodicDbAdapter(episodic);
+		mDbHelper = new EpisodicDbAdapter(episodic);
+		mDbHelper.open();
+		
 		this.episodic = episodic;
 	}
 
@@ -34,13 +36,12 @@ public class SeriesListAdapter extends SimpleCursorAdapter {
 
             public void onClick(View view) {
             	Long rowId = (Long) view.getTag();
-            	mDbHelper.open();
                 mDbHelper.incrementSeason(rowId);
                 if (episodic.GetResetEpisodeOnNextSeason()) {
                 	mDbHelper.resetEpisode(rowId);
                 }
-                mDbHelper.close();
                 episodic.refreshData();
+                
             }
 
         });
@@ -49,10 +50,9 @@ public class SeriesListAdapter extends SimpleCursorAdapter {
 
             public void onClick(View view) {
             	Long rowId = (Long) view.getTag();
-            	mDbHelper.open();
             	mDbHelper.incrementEpisode(rowId);
-            	mDbHelper.close();
             	episodic.refreshData();
+            	
             }
 
         });

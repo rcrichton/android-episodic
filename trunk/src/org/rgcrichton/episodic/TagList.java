@@ -46,10 +46,8 @@ public class TagList extends ListActivity {
             public void onClick(View view) {
             	EditText newTagEditText = (EditText) findViewById(R.id.new_tag_edit_text);
                 String tagName = newTagEditText.getText().toString();
-                mDbHelper.open();
                 mDbHelper.createTag(tagName);
                 refreshData();
-                mDbHelper.close();
                 
             }
 

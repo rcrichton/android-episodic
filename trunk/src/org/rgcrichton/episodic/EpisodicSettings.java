@@ -39,6 +39,8 @@ public class EpisodicSettings extends ListActivity {
 	        	}
         	}
     	});
+        
+        
     }
 
 	private void populateSettings() {

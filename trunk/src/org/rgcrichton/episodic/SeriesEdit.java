@@ -82,6 +82,8 @@ public class SeriesEdit extends Activity {
 	        mEpisodeNumText.setText(series.getString(
 	                series.getColumnIndexOrThrow(EpisodicDbAdapter.KEY_EPISODE_NUM)));
 	        
+	        series.close();
+	        
 	        // fetch tags for this series
 	        Cursor tags = mDbHelper.fetchTags(mRowId);
 	        String tagsStr = "";
@@ -95,6 +97,9 @@ public class SeriesEdit extends Activity {
 	        	
 	        	tags.moveToNext();
 	        }
+	        
+	        tags.close();
+	        
 	        mTagsTextView.setText(tagsStr);
 	    }
 	}
@@ -108,6 +113,7 @@ public class SeriesEdit extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		mDbHelper.open();
         populateFields();
 	}
 
@@ -115,6 +121,7 @@ public class SeriesEdit extends Activity {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
         saveState();
+        
         outState.putSerializable(EpisodicDbAdapter.KEY_ROWID, mRowId);
 	}
 	

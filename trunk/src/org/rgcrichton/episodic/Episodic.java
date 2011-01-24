@@ -1,18 +1,19 @@
 package org.rgcrichton.episodic;
 
-import java.util.ArrayList;
-
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.ListView;
+
+import com.admob.android.ads.AdManager;
+import com.admob.android.ads.AdView;
 
 public class Episodic extends ListActivity {
 	private static final int ACTIVITY_CREATE = 0;
@@ -24,7 +25,7 @@ public class Episodic extends ListActivity {
 	private static final int DELETE_ID = Menu.FIRST + 1;
 	private static final int FILTER_ID = Menu.FIRST + 2;
 	private static final int SETTINGS_ID = Menu.FIRST + 3;
-	
+
 	private final int mResetEpisodeOnNextSeasonID = 0;
 	private final int mDisableAdsID = 1;
 	private boolean mDisableAds = false;
@@ -37,65 +38,78 @@ public class Episodic extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.series_list);
+		
 		mDbHelper = new EpisodicDbAdapter(this);
+		
 		mDbHelper.open();
 		refreshData();
+		
 		registerForContextMenu(getListView());
+
+		// setup ads
+		AdManager.setTestDevices(new String[] { 
+				AdManager.TEST_EMULATOR, // Android emulator
+		});
+		
+		AdView adView = (AdView) findViewById(R.id.ad);
+		adView.requestFreshAd();
 	}
 
 	public void refreshData() {
 		// Get the settings from the DB.
 		updateSettings();
-		
+
 		// Get all of the rows from the database and create the item list
 		Cursor seriesCursor = mDbHelper.fetchAllSeries();
 		startManagingCursor(seriesCursor);
 
 		// Create an array to specify the fields we want to display in the list
 		// (only TITLE)
-		String[] from = new String[] {
-				EpisodicDbAdapter.KEY_SERIES_NAME,
+		String[] from = new String[] { EpisodicDbAdapter.KEY_SERIES_NAME,
 				EpisodicDbAdapter.KEY_SEASON_NUM,
 				EpisodicDbAdapter.KEY_EPISODE_NUM };
 
 		// and an array of the fields we want to bind those fields to (in this
 		// case just text1)
-		int[] to = new int[] {
-				R.id.series_name,
-				R.id.season_num,
+		int[] to = new int[] { R.id.series_name, R.id.season_num,
 				R.id.episode_num };
 
 		// Now create a simple cursor adapter and set it to display
 		SeriesListAdapter series = new SeriesListAdapter(this,
 				R.layout.series_row, seriesCursor, from, to);
-		
+
 		setListAdapter(series);
 	}
 
 	private void updateSettings() {
 		Cursor settingsCursor = mDbHelper.fetchSettings();
-		
+
 		while (!settingsCursor.isAfterLast()) {
-			boolean settingValue = settingsCursor.getInt(settingsCursor.getColumnIndex(EpisodicDbAdapter.KEY_SETTING_VALUE)) > 0 ? true : false;
-			
-			switch (settingsCursor.getInt(settingsCursor.getColumnIndex(EpisodicDbAdapter.KEY_ROWID))) {
-				case mResetEpisodeOnNextSeasonID:
-					mResetEpisodeOnNextSeason = settingValue;
-					break;
-				
-				case mDisableAdsID:
-					mDisableAds = settingValue;
-					break;
+			boolean settingValue = settingsCursor.getInt(settingsCursor
+					.getColumnIndex(EpisodicDbAdapter.KEY_SETTING_VALUE)) > 0 ? true
+					: false;
+
+			switch (settingsCursor.getInt(settingsCursor
+					.getColumnIndex(EpisodicDbAdapter.KEY_ROWID))) {
+			case mResetEpisodeOnNextSeasonID:
+				mResetEpisodeOnNextSeason = settingValue;
+				break;
+
+			case mDisableAdsID:
+				mDisableAds = settingValue;
+				break;
 			}
-			
+
 			settingsCursor.moveToNext();
 		}
+		
+		settingsCursor.close();
 	}
-	
+
 	public boolean GetDisableAds() {
 		return mDisableAds;
 	}
-	
+
 	public boolean GetResetEpisodeOnNextSeason() {
 		return mResetEpisodeOnNextSeason;
 	}
@@ -138,17 +152,17 @@ public class Episodic extends ListActivity {
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
-			case INSERT_ID:
-				createSeries();
-				return true;
-				
-			case FILTER_ID:
-				filterSeries();
-				return true;
-			
-			case SETTINGS_ID:
-				episodicSettings();
-				return true;
+		case INSERT_ID:
+			createSeries();
+			return true;
+
+		case FILTER_ID:
+			filterSeries();
+			return true;
+
+		case SETTINGS_ID:
+			episodicSettings();
+			return true;
 		}
 
 		return super.onMenuItemSelected(featureId, item);
@@ -156,14 +170,14 @@ public class Episodic extends ListActivity {
 
 	private void createSeries() {
 		Intent i = new Intent(this, SeriesEdit.class);
-        startActivityForResult(i, ACTIVITY_CREATE);
+		startActivityForResult(i, ACTIVITY_CREATE);
 	}
-	
+
 	private void filterSeries() {
 		Intent i = new Intent(this, SeriesEdit.class);
-        startActivityForResult(i, ACTIVITY_CREATE);
+		startActivityForResult(i, ACTIVITY_CREATE);
 	}
-	
+
 	private void episodicSettings() {
 		Intent i = new Intent(this, EpisodicSettings.class);
 		startActivityForResult(i, ACTIVITY_SETTINGS);
@@ -186,8 +200,8 @@ public class Episodic extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		Intent i = new Intent(this, SeriesEdit.class);
-        i.putExtra(EpisodicDbAdapter.KEY_ROWID, id);
-        startActivityForResult(i, ACTIVITY_EDIT);
+		i.putExtra(EpisodicDbAdapter.KEY_ROWID, id);
+		startActivityForResult(i, ACTIVITY_EDIT);
 	}
-	
+
 }

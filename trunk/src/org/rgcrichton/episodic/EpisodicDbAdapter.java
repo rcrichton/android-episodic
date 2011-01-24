@@ -206,6 +206,7 @@ public class EpisodicDbAdapter {
 	public boolean incrementSeason(Long rowId) {
 		Cursor series = fetchSeries(rowId);
 		Integer seasonNum = series.getInt(series.getColumnIndex(KEY_SEASON_NUM));
+		series.close();
 		
 		ContentValues args = new ContentValues();
         args.put(KEY_SEASON_NUM, seasonNum + 1);
@@ -216,6 +217,7 @@ public class EpisodicDbAdapter {
 	public boolean incrementEpisode(Long rowId) {
 		Cursor series = fetchSeries(rowId);
 		Integer episodeNum = series.getInt(series.getColumnIndex(KEY_EPISODE_NUM));
+		series.close();
 		
 		ContentValues args = new ContentValues();
         args.put(KEY_EPISODE_NUM, episodeNum + 1);
@@ -254,8 +256,11 @@ public class EpisodicDbAdapter {
 	
 	public boolean hasTag(long rowId, long tagId) {
 		Cursor cursor = mDb.query(SERIES_TICKER_TO_TAGS_TABLE, new String[] {KEY_SERIES_TICKER_ID, KEY_TAG_ID}, KEY_SERIES_TICKER_ID + "=" + rowId + " AND " + KEY_TAG_ID + "=" + tagId, null, null, null, null);
+		int count = cursor.getCount();
 		
-		return cursor.getCount() > 0 ? true : false;
+		cursor.close();
+		
+		return count > 0 ? true : false;
 	}
 	
 	public boolean updateTag(long rowId, String tagName) {
