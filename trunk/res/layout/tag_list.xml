@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical">
+	android:layout_width="fill_parent" android:orientation="vertical"
+	android:layout_height="match_parent">
 
 	<ListView android:id="@+id/android:list" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" />
@@ -10,29 +11,22 @@
 		android:text="@string/tags_empty" />
 
 
-	<TableLayout android:gravity="bottom" android:id="@+id/TableLayout01"
-		android:layout_height="wrap_content" android:layout_width="wrap_content">
+	<LinearLayout android:id="@+id/LinearLayout01"
+		android:layout_height="wrap_content" android:layout_width="match_parent">
 
-		<TableRow android:id="@+id/TableRow01" android:layout_width="wrap_content"
-			android:layout_height="wrap_content">
+		<EditText android:id="@+id/new_tag_edit_text"
+			android:layout_width="match_parent" android:layout_height="match_parent"
+			android:gravity="left" android:layout_gravity="fill_horizontal"
+			android:layout_weight="1" android:layout_alignParentLeft="true"></EditText>
 
-			<EditText android:id="@+id/new_tag_edit_text" android:layout_width="wrap_content"
-				android:layout_height="wrap_content"></EditText>
+		<Button android:text="@string/plus" android:id="@+id/add_new_tag_button"
+			android:layout_width="match_parent" android:layout_height="match_parent"
+			android:layout_gravity="fill_horizontal" android:layout_weight="3"
+			android:layout_alignParentRight="true"></Button>
 
-			<Button android:id="@+id/add_new_tag_button"
-				android:layout_width="wrap_content" android:layout_height="wrap_content"
-				android:text="@string/plus"></Button>
+	</LinearLayout>
+	
+	<Button android:id="@+id/tag_comfirm" android:layout_height="wrap_content"
+			android:text="@string/confirm" android:layout_width="match_parent"></Button>
 
-		</TableRow>
-
-		<TableRow android:id="@+id/TableRow01" android:layout_width="wrap_content"
-			android:layout_height="wrap_content">
-
-			<Button android:id="@+id/tag_comfirm" android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:text="@string/confirm"></Button>
-
-		</TableRow>
-
-	</TableLayout>
-
-</LinearLayout>
+	</LinearLayout>
