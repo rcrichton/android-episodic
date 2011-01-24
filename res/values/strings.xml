@@ -16,7 +16,7 @@
 <color name="blue">#3333FF</color>
 <color name="transparent">#0000</color>
 <string name="tags">Tags:</string>
-<string name="menu_filter">Filter</string>
+<string name="filter">Filter</string>
 <string name="no_tags">No tags set</string>
 <string name="add_tags">Add tags</string>
 <string name="save_tag"> + </string>
