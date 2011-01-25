@@ -40,7 +40,7 @@ public class SeriesListAdapter extends SimpleCursorAdapter {
                 if (episodic.GetResetEpisodeOnNextSeason()) {
                 	mDbHelper.resetEpisode(rowId);
                 }
-                episodic.refreshData();
+                episodic.refreshData(episodic.getCheckedTags());
                 
             }
 
@@ -51,7 +51,7 @@ public class SeriesListAdapter extends SimpleCursorAdapter {
             public void onClick(View view) {
             	Long rowId = (Long) view.getTag();
             	mDbHelper.incrementEpisode(rowId);
-            	episodic.refreshData();
+            	episodic.refreshData(episodic.getCheckedTags());
             	
             }
 

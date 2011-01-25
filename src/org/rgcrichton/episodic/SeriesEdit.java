@@ -82,10 +82,9 @@ public class SeriesEdit extends Activity {
 	        mEpisodeNumText.setText(series.getString(
 	                series.getColumnIndexOrThrow(EpisodicDbAdapter.KEY_EPISODE_NUM)));
 	        
-	        series.close();
-	        
 	        // fetch tags for this series
 	        Cursor tags = mDbHelper.fetchTags(mRowId);
+	        startManagingCursor(tags);
 	        String tagsStr = "";
 	        while (!tags.isAfterLast()) {
 	        	String tagName = tags.getString(tags.getColumnIndex(EpisodicDbAdapter.KEY_TAG_NAME));
@@ -97,8 +96,6 @@ public class SeriesEdit extends Activity {
 	        	
 	        	tags.moveToNext();
 	        }
-	        
-	        tags.close();
 	        
 	        mTagsTextView.setText(tagsStr);
 	    }

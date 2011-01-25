@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -192,19 +193,37 @@ public class EpisodicDbAdapter {
 				null, null, null);
 	}
 
-	public Cursor fetchSeriesByTags(Long[] tagRowIdsForFilter) {
-		String fetchTagsQuery = "SELECT DISTINCT a." + KEY_ROWID + ", a."
+	public Cursor fetchSeriesByTags(ArrayList<Integer> tagRowIdsForFilter) {
+		// Get all series if there are not tags to filter on.
+		if (tagRowIdsForFilter.isEmpty())
+		{
+			return fetchAllSeries();
+		}
+		
+		// Create the sub query which fetches all the series IDs that match the specified tag IDs.
+		String fetchSeriesForTagsSubQuery = "SELECT " + KEY_SERIES_TICKER_ID
+				+ " FROM " + SERIES_TICKER_TO_TAGS_TABLE + " WHERE "
+				+ KEY_TAG_ID + " in (";
+
+		for (int i = 0; i < tagRowIdsForFilter.size(); i++) {
+			fetchSeriesForTagsSubQuery += tagRowIdsForFilter.get(i);
+			if (i != tagRowIdsForFilter.size() - 1) {
+				fetchSeriesForTagsSubQuery += ",";
+			}
+		}
+		
+		fetchSeriesForTagsSubQuery += ") GROUP BY " + KEY_SERIES_TICKER_ID
+		+ " HAVING COUNT(*) = " + tagRowIdsForFilter.size();
+
+		// Create the main query, which will use the sub query to generate 
+		// the table need in the FROM clause.
+		String fetchSeriesForTagsQuery = "SELECT a." + KEY_ROWID + ", a."
 				+ KEY_SERIES_NAME + ", a." + KEY_SEASON_NUM + ", a."
-				+ KEY_EPISODE_NUM + " FROM " + SERIES_TICKER_TABLE + " a, "
-				+ SERIES_TICKER_TO_TAGS_TABLE + " b where a." + KEY_ROWID
+				+ KEY_EPISODE_NUM + " FROM " + SERIES_TICKER_TABLE + " a, ("
+				+ fetchSeriesForTagsSubQuery + ") b where a." + KEY_ROWID
 				+ " = b." + KEY_SERIES_TICKER_ID;
 
-		for (int i = 0; i < tagRowIdsForFilter.length; i++) {
-			fetchTagsQuery += " and b." + KEY_TAG_ID + " = "
-					+ tagRowIdsForFilter[i];
-		}
-
-		Cursor cursor = mDb.rawQuery(fetchTagsQuery, null);
+		Cursor cursor = mDb.rawQuery(fetchSeriesForTagsQuery, null);
 		if (cursor != null) {
 			cursor.moveToFirst();
 		}
@@ -213,9 +232,7 @@ public class EpisodicDbAdapter {
 	}
 
 	public Cursor fetchSeries(long rowId) throws SQLException {
-
 		Cursor cursor =
-
 		mDb.query(true, SERIES_TICKER_TABLE, new String[] { KEY_ROWID,
 				KEY_SERIES_NAME, KEY_SEASON_NUM, KEY_EPISODE_NUM }, KEY_ROWID
 				+ "=" + rowId, null, null, null, null, null);
@@ -223,7 +240,6 @@ public class EpisodicDbAdapter {
 			cursor.moveToFirst();
 		}
 		return cursor;
-
 	}
 
 	public boolean updateSeries(long rowId, String seriesName,

@@ -3,6 +3,7 @@ package org.rgcrichton.episodic;
 import java.util.ArrayList;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -13,7 +14,7 @@ public class TagList extends ListActivity {
 
 	private EpisodicDbAdapter mDbHelper;
 	private long seriesRowId;
-	private ArrayList<Long> tagsForFilter;
+	private ArrayList<Integer> tagsForFilter = new ArrayList<Integer>();
 	private static final String FILTER = "FILTER";
 
 	@Override
@@ -23,7 +24,10 @@ public class TagList extends ListActivity {
 		mDbHelper = new EpisodicDbAdapter(this);
 		mDbHelper.open();
 		
-		this.seriesRowId = (Long) this.getIntent().getExtras().get(EpisodicDbAdapter.KEY_ROWID);
+		if (!filterTags())
+		{
+			this.seriesRowId = (Long) this.getIntent().getExtras().get(EpisodicDbAdapter.KEY_ROWID);
+		}
 
 		setContentView(R.layout.tag_list);
 		
@@ -38,8 +42,9 @@ public class TagList extends ListActivity {
 		confirmButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                setResult(RESULT_OK);
-                getIntent().putExtra("tags", tagsForFilter);
+            	Intent resultIntent = new Intent();
+            	resultIntent.putIntegerArrayListExtra("org.rgcrichton.episodic.tags", tagsForFilter);
+                setResult(RESULT_OK, resultIntent);
                 finish();
             }
 
@@ -93,11 +98,11 @@ public class TagList extends ListActivity {
 		return super.getIntent().hasExtra(FILTER);
 	}
 
-	public void addTagFilter(long tagRowId) {
-		tagsForFilter.add( tagRowId);
+	public void addTagFilter(Integer tagRowId) {
+		tagsForFilter.add(tagRowId);
 	}
 
-	public void removeTagFilter(long tagRowId) {
+	public void removeTagFilter(Integer tagRowId) {
 		tagsForFilter.remove(tagRowId);
 	}
 }

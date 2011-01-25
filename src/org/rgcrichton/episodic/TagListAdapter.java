@@ -76,9 +76,9 @@ public class TagListAdapter extends SimpleCursorAdapter {
 				}
 				else {
 					if (isChecked) {
-						tagList.addTagFilter(tagRowId);
+						tagList.addTagFilter((int)tagRowId);
 					} else {
-						tagList.removeTagFilter(tagRowId);
+						tagList.removeTagFilter((int)tagRowId);
 					}
 				}
 			}
