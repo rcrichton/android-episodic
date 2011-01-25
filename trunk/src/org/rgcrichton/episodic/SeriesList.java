@@ -7,12 +7,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.ListView;
 
 public class SeriesList extends ListActivity {
 	private static final int ACTIVITY_CREATE = 0;
@@ -34,7 +34,7 @@ public class SeriesList extends ListActivity {
 	 * The IDs of the tags that are applicable to the list of series. Note that
 	 * no tags means that all series will be displayed.
 	 */
-	private long[] mTagRowIdsForFilter;
+	private ArrayList<Integer> mTagRowIdsForFilter = new ArrayList<Integer>();
 
 	private EpisodicDbAdapter mDbHelper;
 
@@ -49,7 +49,7 @@ public class SeriesList extends ListActivity {
 		registerForContextMenu(getListView());
 	}
 
-	public void refreshData(Long[] tagRowIdsForFilter) {
+	public void refreshData(ArrayList<Integer> tagRowIdsForFilter) {
 		// Get the settings from the DB.
 		updateSettings();
 		
@@ -80,6 +80,7 @@ public class SeriesList extends ListActivity {
 
 	private void updateSettings() {
 		Cursor settingsCursor = mDbHelper.fetchSettings();
+		startManagingCursor(settingsCursor);
 		
 		while (!settingsCursor.isAfterLast()) {
 			boolean settingValue = settingsCursor.getInt(settingsCursor.getColumnIndex(EpisodicDbAdapter.KEY_SETTING_VALUE)) > 0 ? true : false;
@@ -113,7 +114,7 @@ public class SeriesList extends ListActivity {
 		
 		switch (requestCode) {
 		case ACTIVITY_FILTER:
-			mTagRowIdsForFilter = data.getExtras().getLongArray("tags");
+			mTagRowIdsForFilter = data.getIntegerArrayListExtra("org.rgcrichton.episodic.tags");
 		}
 		refreshData(mTagRowIdsForFilter);
 	}
@@ -125,7 +126,7 @@ public class SeriesList extends ListActivity {
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 					.getMenuInfo();
 			mDbHelper.deleteSeries(info.id);
-			refreshData();
+			refreshData(mTagRowIdsForFilter);
 			return true;
 		}
 		return super.onContextItemSelected(item);
@@ -172,7 +173,7 @@ public class SeriesList extends ListActivity {
 	}
 	
 	private void filterSeries() {
-		Intent i = new Intent(this, SeriesEdit.class);
+		Intent i = new Intent(this, TagList.class);
 		i.putExtra("FILTER", true);
         startActivityForResult(i, ACTIVITY_FILTER);
 	}
@@ -189,7 +190,7 @@ public class SeriesList extends ListActivity {
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 					.getMenuInfo();
 			mDbHelper.deleteSeries(info.id);
-			refreshData();
+			refreshData(mTagRowIdsForFilter);
 			return true;
 		}
 		return super.onContextItemSelected(item);
@@ -201,6 +202,10 @@ public class SeriesList extends ListActivity {
 		Intent i = new Intent(this, SeriesEdit.class);
         i.putExtra(EpisodicDbAdapter.KEY_ROWID, id);
         startActivityForResult(i, ACTIVITY_EDIT);
+	}
+
+	public ArrayList<Integer> getCheckedTags() {
+		return mTagRowIdsForFilter;
 	}
 	
 }
