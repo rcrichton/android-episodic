@@ -24,9 +24,11 @@ public class TagList extends ListActivity {
 		mDbHelper = new EpisodicDbAdapter(this);
 		mDbHelper.open();
 		
+		Bundle extras = this.getIntent().getExtras();
+		
 		if (!filterTags())
 		{
-			this.seriesRowId = (Long) this.getIntent().getExtras().get(EpisodicDbAdapter.KEY_ROWID);
+			this.seriesRowId = extras.getLong(EpisodicDbAdapter.KEY_ROWID, -1);
 		}
 
 		setContentView(R.layout.tag_list);
@@ -78,7 +80,7 @@ public class TagList extends ListActivity {
 
 		// Now create a simple cursor adapter and set it to display
 		TagListAdapter tags;
-		if (filterTags()) {
+		if (filterTags() || seriesRowId == -1) {
 			tags = new TagListAdapter(this,
 					R.layout.tag_row, tagsCursor, from, to);
 		}
