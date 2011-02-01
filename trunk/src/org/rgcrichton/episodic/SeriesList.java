@@ -14,6 +14,9 @@ import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 
+import com.admob.android.ads.AdManager;
+import com.admob.android.ads.AdView;
+
 public class SeriesList extends ListActivity {
 	private static final int ACTIVITY_CREATE = 0;
 	private static final int ACTIVITY_EDIT = 1;
@@ -47,6 +50,14 @@ public class SeriesList extends ListActivity {
 		mDbHelper.open();
 		refreshData(mTagRowIdsForFilter);
 		registerForContextMenu(getListView());
+		
+		// setup ads
+		AdManager.setTestDevices(new String[] {
+				AdManager.TEST_EMULATOR, // Android emulator
+		});
+		
+		AdView adView = (AdView) findViewById(R.id.ad);
+		adView.requestFreshAd();
 	}
 
 	public void refreshData(ArrayList<Integer> tagRowIdsForFilter) {
