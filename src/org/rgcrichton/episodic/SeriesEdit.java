@@ -1,5 +1,9 @@
 package org.rgcrichton.episodic;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +23,9 @@ public class SeriesEdit extends Activity {
     private EditText mEpisodeNumText;
     private TextView mTagsTextView;
     private Long mRowId;
+    
+    private Set<Integer> mTagRowIdsToAdd = new HashSet<Integer>();
+    private Set<Integer> mTagRowIdsToDelete = new HashSet<Integer>();
     
     private Context ctx = this;
 
@@ -70,6 +77,56 @@ public class SeriesEdit extends Activity {
 
         });
     }
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		Set<Integer> mTagRowIds = new HashSet<Integer>(data.getIntegerArrayListExtra("org.rgcrichton.episodic.tags"));
+		updateTags(mTagRowIds);
+	}
+
+	private void updateTags(Set<Integer> mTagRowIds) {
+		// fetch current tags for this series and don't display then if they have been deleted
+        Cursor tags = mDbHelper.fetchTags(mRowId);
+        startManagingCursor(tags);
+        
+        String tagsStr = "";
+        mTagRowIdsToAdd = mTagRowIds;
+        
+        while (!tags.isAfterLast()) {
+        	Integer tagId = tags.getInt(tags.getColumnIndex(EpisodicDbAdapter.KEY_ROWID));
+        	if (mTagRowIds.contains(tagId)) {
+        		mTagRowIdsToAdd.remove(tagId);
+	        	String tagName = tags.getString(tags.getColumnIndex(EpisodicDbAdapter.KEY_TAG_NAME));
+	        	if (tagsStr.length() <= 0) {
+	        		tagsStr += tagName;
+	        	} else {
+	        		tagsStr += ", " + tagName;
+	        	}
+        	} else {
+        		mTagRowIdsToDelete.add(tagId);
+        	}
+        	
+        	tags.moveToNext();
+        }
+
+        // add tags that have been recently checked
+        Cursor tags2 = mDbHelper.fetchTags(mTagRowIdsToAdd);
+        startManagingCursor(tags2);
+        while (!tags2.isAfterLast()) {
+        	String tagName = tags2.getString(tags2.getColumnIndex(EpisodicDbAdapter.KEY_TAG_NAME));
+        	if (tagsStr.length() <= 0) {
+        		tagsStr += tagName;
+        	} else {
+        		tagsStr += ", " + tagName;
+        	}
+        	
+        	tags2.moveToNext();
+        }
+        
+        mTagsTextView.setText(tagsStr);
+	}
 
 	private void populateFields() {
 		if (mRowId != null) {
@@ -150,6 +207,14 @@ public class SeriesEdit extends Activity {
 	        } else {
 	            mDbHelper.updateSeries(mRowId, seriesTitle, seasonNum, episodeNum);
 	        }
+        }
+        
+        // Save/delete tag associations
+        for (Integer tagId : mTagRowIdsToAdd) {
+        	mDbHelper.addTagToSeries(mRowId, tagId);
+        }
+        for (Integer tagId : mTagRowIdsToDelete) {
+        	mDbHelper.removeTagFromSeries(mRowId, tagId);
         }
     }
 }

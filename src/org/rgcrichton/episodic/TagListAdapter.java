@@ -67,19 +67,10 @@ public class TagListAdapter extends SimpleCursorAdapter {
 			
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				long tagRowId = (Long) buttonView.getTag();
-				if (!mFiltering) {
-					if (isChecked) {
-						mDbHelper.addTagToSeries(seriesRowId, tagRowId);
-					} else {
-						mDbHelper.removeTagFromSeries(seriesRowId, tagRowId);
-					}
-				}
-				else {
-					if (isChecked) {
-						tagList.addTag((int)tagRowId);
-					} else {
-						tagList.removeTag((int)tagRowId);
-					}
+				if (isChecked) {
+					tagList.addTag((int)tagRowId);
+				} else {
+					tagList.removeTag((int)tagRowId);
 				}
 			}
 		});
