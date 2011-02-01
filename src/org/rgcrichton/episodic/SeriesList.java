@@ -123,11 +123,13 @@ public class SeriesList extends ListActivity {
 		super.onActivityResult(requestCode, resultCode, data);
 		
 		
-		switch (requestCode) {
-		case ACTIVITY_FILTER:
-			mTagRowIdsForFilter = data.getIntegerArrayListExtra("org.rgcrichton.episodic.tags");
+		if (data != null) {
+			switch (requestCode) {
+			case ACTIVITY_FILTER:
+				mTagRowIdsForFilter = data.getIntegerArrayListExtra("org.rgcrichton.episodic.tags");
+			}
+			refreshData(mTagRowIdsForFilter);
 		}
-		refreshData(mTagRowIdsForFilter);
 	}
 
 	@Override

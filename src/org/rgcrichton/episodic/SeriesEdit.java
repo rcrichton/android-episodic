@@ -1,7 +1,6 @@
 package org.rgcrichton.episodic;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import android.app.Activity;
@@ -9,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +22,7 @@ public class SeriesEdit extends Activity {
     private EditText mSeasonNumText;
     private EditText mEpisodeNumText;
     private TextView mTagsTextView;
+    private String mTagsString;
     private Long mRowId;
     
     private Set<Integer> mTagRowIdsToAdd = new HashSet<Integer>();
@@ -82,8 +83,11 @@ public class SeriesEdit extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		
-		Set<Integer> mTagRowIds = new HashSet<Integer>(data.getIntegerArrayListExtra("org.rgcrichton.episodic.tags"));
-		updateTags(mTagRowIds);
+		if (data != null)
+		{
+			Set<Integer> mTagRowIds = new HashSet<Integer>(data.getIntegerArrayListExtra("org.rgcrichton.episodic.tags"));
+			updateTags(mTagRowIds);
+		}
 	}
 
 	private void updateTags(Set<Integer> mTagRowIds) {
@@ -91,7 +95,8 @@ public class SeriesEdit extends Activity {
         Cursor tags = mDbHelper.fetchTags(mRowId);
         startManagingCursor(tags);
         
-        String tagsStr = "";
+        mTagsString = "";
+        mTagRowIdsToDelete.clear();
         mTagRowIdsToAdd = mTagRowIds;
         
         while (!tags.isAfterLast()) {
@@ -99,10 +104,10 @@ public class SeriesEdit extends Activity {
         	if (mTagRowIds.contains(tagId)) {
         		mTagRowIdsToAdd.remove(tagId);
 	        	String tagName = tags.getString(tags.getColumnIndex(EpisodicDbAdapter.KEY_TAG_NAME));
-	        	if (tagsStr.length() <= 0) {
-	        		tagsStr += tagName;
+	        	if (mTagsString.length() <= 0) {
+	        		mTagsString += tagName;
 	        	} else {
-	        		tagsStr += ", " + tagName;
+	        		mTagsString += ", " + tagName;
 	        	}
         	} else {
         		mTagRowIdsToDelete.add(tagId);
@@ -116,16 +121,26 @@ public class SeriesEdit extends Activity {
         startManagingCursor(tags2);
         while (!tags2.isAfterLast()) {
         	String tagName = tags2.getString(tags2.getColumnIndex(EpisodicDbAdapter.KEY_TAG_NAME));
-        	if (tagsStr.length() <= 0) {
-        		tagsStr += tagName;
+        	if (mTagsString.length() <= 0) {
+        		mTagsString += tagName;
         	} else {
-        		tagsStr += ", " + tagName;
+        		mTagsString += ", " + tagName;
         	}
         	
         	tags2.moveToNext();
         }
         
-        mTagsTextView.setText(tagsStr);
+        Handler refresh = new Handler();
+        refresh.post(new Runnable() {
+            public void run()
+            {
+            	updateTagsTextView();
+            }
+        });
+	}
+	
+	private void updateTagsTextView() {
+		mTagsTextView.setText(mTagsString);
 	}
 
 	private void populateFields() {

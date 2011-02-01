@@ -1,6 +1,9 @@
 package org.rgcrichton.episodic;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -14,7 +17,7 @@ public class TagList extends ListActivity {
 
 	private EpisodicDbAdapter mDbHelper;
 	private long seriesRowId;
-	private ArrayList<Integer> tagsList = new ArrayList<Integer>();
+	private Set<Integer> tagsList = new HashSet<Integer>();
 	private static final String FILTER = "FILTER";
 	private static final Integer INVALID_ROW_ID = -1;  
 
@@ -46,7 +49,8 @@ public class TagList extends ListActivity {
 
             public void onClick(View view) {
             	Intent resultIntent = new Intent();
-            	resultIntent.putIntegerArrayListExtra("org.rgcrichton.episodic.tags", tagsList);
+            	ArrayList<Integer> tagArray = new ArrayList<Integer>(tagsList);
+            	resultIntent.putIntegerArrayListExtra("org.rgcrichton.episodic.tags", tagArray);
                 setResult(RESULT_OK, resultIntent);
                 finish();
             }
