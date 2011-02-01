@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Set;
 
 import android.content.ContentValues;
@@ -315,9 +316,11 @@ public class EpisodicDbAdapter {
 	
 	public Cursor fetchTags(Set<Integer> rowIds) throws SQLException {
 		String whereClause = KEY_ROWID + " in (";
-		for (Integer i : rowIds) {
-			whereClause += i;
-			if (i != rowIds.size() - 1) {
+		
+		Iterator<Integer> iter = rowIds.iterator();
+		while (iter.hasNext()) {
+			whereClause += iter.next();
+			if (!iter.hasNext()) {
 				whereClause += ",";
 			}
 		}
