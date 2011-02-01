@@ -320,14 +320,20 @@ public class EpisodicDbAdapter {
 		Iterator<Integer> iter = rowIds.iterator();
 		while (iter.hasNext()) {
 			whereClause += iter.next();
-			if (!iter.hasNext()) {
+			if (iter.hasNext()) {
 				whereClause += ",";
 			}
 		}
 		whereClause += ")";
 		
-		return mDb.query(TAGS_TABLE, new String[] { KEY_ROWID, KEY_TAG_NAME },
-						 whereClause, null, null, null, null);
+		Cursor cursor = mDb.query(TAGS_TABLE, new String[] { KEY_ROWID, KEY_TAG_NAME },
+				 whereClause, null, null, null, null);
+		
+		if (cursor != null) {
+			cursor.moveToFirst();
+		}
+		
+		return cursor;
 	}
 
 	public boolean hasTag(long rowId, long tagId) {
