@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -313,14 +313,15 @@ public class EpisodicDbAdapter {
 		return cursor;
 	}
 	
-	public Cursor fetchTags(List<Integer> rowIds) throws SQLException {
-		String whereClause = KEY_ROWID + " in ";
-		for (int i = 0; i < rowIds.size(); i++) {
-			whereClause += rowIds.get(i);
+	public Cursor fetchTags(Set<Integer> rowIds) throws SQLException {
+		String whereClause = KEY_ROWID + " in (";
+		for (Integer i : rowIds) {
+			whereClause += i;
 			if (i != rowIds.size() - 1) {
 				whereClause += ",";
 			}
 		}
+		whereClause += ")";
 		
 		return mDb.query(TAGS_TABLE, new String[] { KEY_ROWID, KEY_TAG_NAME },
 						 whereClause, null, null, null, null);
