@@ -65,16 +65,15 @@ public class EpisodicDbAdapter {
 		public void createDataBase() throws IOException {
 
 			boolean dbExist = checkDataBase();
+			SQLiteDatabase db_Read = null;
 
 			if (dbExist) {
 				// do nothing - database already exist
 			} else {
-
-				// By calling this method and empty database will be created
-				// into the default system path
-				// of your application so we are gonna be able to overwrite that
-				// database with our database.
-				this.getReadableDatabase();
+				//By calling this method and empty database will be created into the default system path 
+				//of your application so we are gonna be able to overwrite that database with our database. 
+				db_Read = this.getReadableDatabase(); 
+				db_Read.close();
 
 				try {
 					copyDataBase();
@@ -88,7 +87,7 @@ public class EpisodicDbAdapter {
 		/**
 		 * Copies your database from your local assets-folder to the just
 		 * created empty database in the system folder, from where it can be
-		 * accessed and handled. This is done by transfering bytestream.
+		 * accessed and handled. This is done by transferring byte stream.
 		 * */
 		private void copyDataBase() throws IOException {
 
