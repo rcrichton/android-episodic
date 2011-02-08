@@ -50,6 +50,7 @@ public class SeriesList extends ListActivity {
 		// setup ads
 		AdManager.setTestDevices(new String[] {
 				AdManager.TEST_EMULATOR, // Android emulator
+				"D28FBF3CDEE35D8A0710E369E0EF96ED" //Ryan HTC Hero
 		});
 		
 		AdView adView = (AdView) findViewById(R.id.ad);
