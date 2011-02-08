@@ -4,15 +4,17 @@
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:orientation="vertical">
 
+	<com.admob.android.ads.AdView android:id="@+id/ad"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"></com.admob.android.ads.AdView>
+
 	<ListView android:id="@+id/android:list" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:layout_alignParentTop="true"
-		android:paddingBottom="45sp" />
+		android:layout_above="@id/ad" android:layout_height="wrap_content"
+		android:layout_alignParentTop="true" />
 
 	<TextView android:id="@+id/android:empty"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:text="@string/no_series" android:layout_alignParentTop="true" />
 
-	<com.admob.android.ads.AdView android:id="@+id/ad"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"></com.admob.android.ads.AdView>
+
 </RelativeLayout>

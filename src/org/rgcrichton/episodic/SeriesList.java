@@ -45,6 +45,7 @@ public class SeriesList extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.series_list);
 		
 		// setup ads
