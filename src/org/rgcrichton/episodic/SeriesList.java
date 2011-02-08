@@ -53,15 +53,16 @@ public class SeriesList extends ListActivity {
 				"D28FBF3CDEE35D8A0710E369E0EF96ED" //Ryan HTC Hero
 		});
 		
-		AdView adView = (AdView) findViewById(R.id.ad);
-		adView.requestFreshAd();
-		
 		// setup DB
 		mDbHelper = new EpisodicDbAdapter(this);
 		mDbHelper.open();
 		
 		//populate layout with data
 		refreshData(mTagRowIdsForFilter);
+		
+		// switch ads on/off depending on settings
+		AdView adView = (AdView) findViewById(R.id.ad);
+		adView.setEnabled(!mDisableAds);
 		
 		// register menu
 		registerForContextMenu(getListView());
