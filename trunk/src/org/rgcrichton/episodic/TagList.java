@@ -2,14 +2,21 @@ package org.rgcrichton.episodic;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -19,7 +26,9 @@ public class TagList extends ListActivity {
 	private long seriesRowId;
 	private Set<Integer> tagsList = new HashSet<Integer>();
 	private static final String FILTER = "FILTER";
-	private static final Integer INVALID_ROW_ID = -1;  
+	private static final Integer INVALID_ROW_ID = -1;
+	private static final int DELETE_ID = Menu.FIRST;
+	private static int tagToDelete;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +52,9 @@ public class TagList extends ListActivity {
 		if (filterTags()) {
 			confirmButton.setText(R.string.filter);
 		}
+		
+		// register menu
+		registerForContextMenu(getListView());
 		
 
 		confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +83,25 @@ public class TagList extends ListActivity {
         });
 	}
 	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case DELETE_ID:
+			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+					.getMenuInfo();
+			showDialog((int) info.id);
+			return true;
+		}
+		return super.onContextItemSelected(item);
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		menu.add(0, DELETE_ID, 0, R.string.menu_delete);
+	}
+	
 	public void refreshData() {
 		// Get all of the rows from the database and create the item list
 		Cursor tagsCursor = mDbHelper.fetchAllTags();
@@ -94,6 +125,27 @@ public class TagList extends ListActivity {
 		}
 		
 		setListAdapter(tags);
+	}
+	
+	protected Dialog onCreateDialog (int id) {
+		tagToDelete = id;
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.tag_delete_warning)
+		       .setTitle(R.string.tag_delete_title)
+		       .setCancelable(false)
+		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   mDbHelper.deleteTag(tagToDelete);
+		   			   refreshData();
+		           }
+		       })
+		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   tagToDelete = -1;
+		               dialog.cancel();
+		           }
+		       });
+		return builder.create();
 	}
 	
 	/**

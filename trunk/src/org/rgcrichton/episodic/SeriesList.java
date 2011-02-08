@@ -203,18 +203,7 @@ public class SeriesList extends ListActivity {
 		startActivityForResult(i, ACTIVITY_SETTINGS);
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case DELETE_ID:
-			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-					.getMenuInfo();
-			mDbHelper.deleteSeries(info.id);
-			refreshData(mTagRowIdsForFilter);
-			return true;
-		}
-		return super.onContextItemSelected(item);
-	}
+
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
