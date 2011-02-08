@@ -46,10 +46,6 @@ public class SeriesList extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.series_list);
-		mDbHelper = new EpisodicDbAdapter(this);
-		mDbHelper.open();
-		refreshData(mTagRowIdsForFilter);
-		registerForContextMenu(getListView());
 		
 		// setup ads
 		AdManager.setTestDevices(new String[] {
@@ -58,6 +54,17 @@ public class SeriesList extends ListActivity {
 		
 		AdView adView = (AdView) findViewById(R.id.ad);
 		adView.requestFreshAd();
+		
+		// setup DB
+		mDbHelper = new EpisodicDbAdapter(this);
+		mDbHelper.open();
+		
+		//populate layout with data
+		refreshData(mTagRowIdsForFilter);
+		
+		// register menu
+		registerForContextMenu(getListView());
+		
 	}
 
 	public void refreshData(ArrayList<Integer> tagRowIdsForFilter) {
