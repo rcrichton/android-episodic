@@ -36,4 +36,5 @@
 	<!-- AdMob SDK requires Internet permission -->
 	<uses-permission android:name="android.permission.INTERNET" />
 
+	<uses-sdk android:minSdkVersion="3"></uses-sdk>
 </manifest> 
