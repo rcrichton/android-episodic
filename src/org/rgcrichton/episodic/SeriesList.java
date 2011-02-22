@@ -40,6 +40,7 @@ public class SeriesList extends ListActivity {
 	private ArrayList<Integer> mTagRowIdsForFilter = new ArrayList<Integer>();
 
 	private EpisodicDbAdapter mDbHelper;
+	private AdView adView;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -50,8 +51,7 @@ public class SeriesList extends ListActivity {
 		
 		// setup ads
 		AdManager.setTestDevices(new String[] {
-				AdManager.TEST_EMULATOR, // Android emulator
-				"D28FBF3CDEE35D8A0710E369E0EF96ED" //Ryan HTC Hero
+				AdManager.TEST_EMULATOR // Android emulator
 		});
 		
 		// setup DB
@@ -62,7 +62,7 @@ public class SeriesList extends ListActivity {
 		refreshData(mTagRowIdsForFilter);
 		
 		// switch ads on/off depending on settings
-		AdView adView = (AdView) findViewById(R.id.ad);
+		adView = (AdView) findViewById(R.id.ad);
 		adView.setEnabled(!mDisableAds);
 		
 		// register menu
@@ -97,6 +97,10 @@ public class SeriesList extends ListActivity {
 				R.layout.series_row, seriesCursor, from, to);
 		
 		setListAdapter(series);
+		
+		if (adView != null) {
+			adView.requestFreshAd();
+		}
 	}
 
 	private void updateSettings() {
