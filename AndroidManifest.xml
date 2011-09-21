@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="org.rgcrichton.episodic" android:versionName="0.4"
-	android:versionCode="4">
+	package="org.rgcrichton.episodic" android:versionName="1.0" android:versionCode="5">
 	<application android:label="@string/app_name"
 		android:debuggable="false" android:icon="@drawable/episodic_icon">
 		<activity android:label="@string/app_name" android:name=".SeriesList">
@@ -36,5 +35,5 @@
 	<!-- AdMob SDK requires Internet permission -->
 	<uses-permission android:name="android.permission.INTERNET" />
 
-	<uses-sdk android:minSdkVersion="3"></uses-sdk>
+	<uses-sdk android:minSdkVersion="7"></uses-sdk>
 </manifest> 
